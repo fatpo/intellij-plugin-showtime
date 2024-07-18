@@ -32,6 +32,7 @@ class MyToolWindowFactory : ToolWindowFactory {
                 insets = JBUI.insets(5)
             }
 
+            // 第一部分：展示时间戳
             val label10 = JLabel(MyBundle.message("timestamp.seconds.label"))
             val textField10 = JTextField(15).apply { isEditable = false }
 
@@ -74,68 +75,109 @@ class MyToolWindowFactory : ToolWindowFactory {
             gbc.fill = GridBagConstraints.HORIZONTAL
             add(JSeparator(), gbc)
 
+            // 第二部分：10位时间戳转北京时间
+            val timeStampLabel1 = JLabel(MyBundle.message("timestamp.seconds.label"))
+            val timeStampField1 = JTextField(15)
+            val timeStringLabel1 = JLabel(MyBundle.message("beijing.time.label"))
+            val timeStringField1 = JTextField(15)
+            val convertToStringButton = JButton(MyBundle.message("timestamp.to.string.button"))
+
             gbc.gridwidth = 1
             gbc.fill = GridBagConstraints.NONE
 
-            val timeStampLabel = JLabel(MyBundle.message("timestamp.seconds.label"))
-            val timeStampField = JTextField(15)
-            val beijingTimeLabel = JLabel(MyBundle.message("beijing.time.label"))
-            val beijingTimeField = JTextField(15)
-            val utcTimeLabel = JLabel(MyBundle.message("utc.time.label"))
-            val utcTimeField = JTextField(15)
-            val convertToStringButton = JButton(MyBundle.message("timestamp.to.string.button"))
-            val convertToTimeStampButton = JButton(MyBundle.message("string.to.timestamp.button"))
-
             gbc.gridx = 0
             gbc.gridy = 5
-            add(timeStampLabel, gbc)
+            add(timeStampLabel1, gbc)
 
             gbc.gridx = 1
-            add(timeStampField, gbc)
+            add(timeStampField1, gbc)
 
             gbc.gridx = 0
             gbc.gridy = 6
-            add(beijingTimeLabel, gbc)
+            add(timeStringLabel1, gbc)
 
             gbc.gridx = 1
-            add(beijingTimeField, gbc)
+            add(timeStringField1, gbc)
 
-            gbc.gridx = 0
+            gbc.gridx = 1
             gbc.gridy = 7
-            add(utcTimeLabel, gbc)
-
-            gbc.gridx = 1
-            add(utcTimeField, gbc)
+            add(convertToStringButton, gbc)
 
             gbc.gridx = 0
             gbc.gridy = 8
-            add(convertToStringButton, gbc)
+            gbc.gridwidth = 2
+            gbc.fill = GridBagConstraints.HORIZONTAL
+            add(JSeparator(), gbc)
+
+            // 第三部分：北京时间转10位时间戳
+            val timeStringLabel2 = JLabel(MyBundle.message("beijing.time.label"))
+            val timeStringField2 = JTextField(15)
+            val timeStampLabel2 = JLabel(MyBundle.message("timestamp.seconds.label"))
+            val timeStampField2 = JTextField(15)
+            val convertToTimeStampButton = JButton(MyBundle.message("string.to.timestamp.button"))
+
+            gbc.gridwidth = 1
+            gbc.fill = GridBagConstraints.NONE
+
+            gbc.gridx = 0
+            gbc.gridy = 9
+            add(timeStringLabel2, gbc)
 
             gbc.gridx = 1
+            add(timeStringField2, gbc)
+
+            gbc.gridx = 0
+            gbc.gridy = 10
+            add(timeStampLabel2, gbc)
+
+            gbc.gridx = 1
+            add(timeStampField2, gbc)
+
+            gbc.gridx = 1
+            gbc.gridy = 11
             add(convertToTimeStampButton, gbc)
 
+            // 添加事件监听器
             refreshButton.addActionListener {
-                refreshTimeStamps(textField10, textField13, textField16, timeStampField, beijingTimeField, utcTimeField)
+                refreshTimeStamps(
+                    textField10,
+                    textField13,
+                    textField16,
+                    timeStampField1,
+                    timeStringField1,
+                    timeStringField2,
+                    timeStampField2
+                )
             }
 
             convertToStringButton.addActionListener {
-                convertTimeStampToString(timeStampField, beijingTimeField, utcTimeField)
+                convertTimeStampToString(timeStampField1, timeStringField1)
             }
 
             convertToTimeStampButton.addActionListener {
-                convertStringToTimeStamp(beijingTimeField, timeStampField, utcTimeField)
+                convertStringToTimeStamp(timeStringField2, timeStampField2)
             }
 
-            refreshTimeStamps(textField10, textField13, textField16, timeStampField, beijingTimeField, utcTimeField)
+            // 初始化界面
+            refreshTimeStamps(
+                textField10,
+                textField13,
+                textField16,
+                timeStampField1,
+                timeStringField1,
+                timeStringField2,
+                timeStampField2
+            )
         }
 
         private fun refreshTimeStamps(
             textField10: JTextField,
             textField13: JTextField,
             textField16: JTextField,
-            timeStampField: JTextField,
-            beijingTimeField: JTextField,
-            utcTimeField: JTextField
+            timeStampField1: JTextField,
+            timeStringField1: JTextField,
+            timeStringField2: JTextField,
+            timeStampField2: JTextField
         ) {
             val currentTimeMillis = System.currentTimeMillis()
             val timeStamp13 = currentTimeMillis.toString()
@@ -150,10 +192,11 @@ class MyToolWindowFactory : ToolWindowFactory {
             textField13.text = timeStamp13
             textField16.text = timeStamp16
 
+            timeStampField1.text = timeStamp10
             val timeStr = getTimeStr(timeStamp10)
-            timeStampField.text = timeStamp10
-            beijingTimeField.text = timeStr.first
-            utcTimeField.text = timeStr.second
+            timeStringField1.text = timeStr.first
+            timeStringField2.text = timeStr.first
+            timeStampField2.text = timeStamp10
         }
 
         private fun getTimeStr(origin10BitTsStr: String): Pair<String, String> {
@@ -169,37 +212,33 @@ class MyToolWindowFactory : ToolWindowFactory {
         }
 
         private fun convertTimeStampToString(
-            timeStampField: JTextField, beijingTimeField: JTextField, utcTimeField: JTextField
+            timeStampField: JTextField, timeStringField: JTextField
         ) {
             try {
                 val timeStamp = timeStampField.text.trim().toLong()
                 val instant = Instant.ofEpochSecond(timeStamp)
                 val beijingTime = LocalDateTime.ofInstant(instant, ZoneId.of("Asia/Shanghai"))
-                val utcTime = DateTimeFormatter.ISO_INSTANT.format(instant)
-
                 val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-                beijingTimeField.text = beijingTime.format(formatter)
-                utcTimeField.text = utcTime
+                timeStringField.text = beijingTime.format(formatter)
             } catch (e: NumberFormatException) {
-                JOptionPane.showMessageDialog(content, "invalid timestamp", "ERROR", JOptionPane.ERROR_MESSAGE)
+                JOptionPane.showMessageDialog(content, "invalid timestamp", "error", JOptionPane.ERROR_MESSAGE)
             }
         }
 
         private fun convertStringToTimeStamp(
-            beijingTimeField: JTextField, timeStampField: JTextField, utcTimeField: JTextField
+            timeStringField: JTextField, timeStampField: JTextField
         ) {
             try {
                 val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-                val beijingTime = LocalDateTime.parse(beijingTimeField.text.trim(), formatter)
+                val beijingTime = LocalDateTime.parse(timeStringField.text.trim(), formatter)
                 val instant = beijingTime.atZone(ZoneId.of("Asia/Shanghai")).toInstant()
                 timeStampField.text = instant.epochSecond.toString()
-
-                val utcTime = beijingTime.atZone(ZoneId.of("Asia/Shanghai")).withZoneSameInstant(ZoneId.of("UTC"))
-                    .toLocalDateTime()
-                utcTimeField.text = utcTime.format(formatter)
             } catch (e: Exception) {
                 JOptionPane.showMessageDialog(
-                    content, "invalid time str, should be: 2024-07-18 12:05:05", "ERROR", JOptionPane.ERROR_MESSAGE
+                    content,
+                    "invalid string formatter, should be: 2021-01-01 12:00:01",
+                    "error",
+                    JOptionPane.ERROR_MESSAGE
                 )
             }
         }
