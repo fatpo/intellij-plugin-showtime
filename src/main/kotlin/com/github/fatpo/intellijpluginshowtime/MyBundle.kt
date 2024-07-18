@@ -1,5 +1,3 @@
-package com.github.fatpo.intellijpluginshowtime
-
 import com.intellij.DynamicBundle
 import org.jetbrains.annotations.NonNls
 import org.jetbrains.annotations.PropertyKey

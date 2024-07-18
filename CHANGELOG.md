@@ -3,5 +3,9 @@
 # intellij-plugin-showtime Changelog
 
 ## [Unreleased]
+
 ### Added
-- Initial scaffold created from [IntelliJ Platform Plugin Template](https://github.com/JetBrains/intellij-platform-plugin-template)
+
+- 2024年07月16日10:47:11 init showtime plugin
+- 2024年07月17日12:18:28 add feature: show current timestamp
+- 2024年07月18日11:23:42 add feature: timestamp tran to str vs str tran to timestamp
