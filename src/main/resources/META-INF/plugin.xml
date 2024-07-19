@@ -1,11 +1,10 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <id>com.github.fatpo.intellijpluginshowtime</id>
-    <name>Showtime-Util</name>
+    <id>org.fatpo.JetbrainsShowTimestampPlugin</id>
+    <name>ShowtimeUtil</name>
     <vendor>fatpo</vendor>
 
     <depends>com.intellij.modules.platform</depends>
-    <idea-version since-build="222.3345.118"/>
 
     <resource-bundle>messages.MyBundle</resource-bundle>
 

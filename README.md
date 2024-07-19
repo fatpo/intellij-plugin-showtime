@@ -25,7 +25,7 @@
   about releases containing new features and fixes.
 
 <!-- Plugin description -->
-A plugin for Jetbrains to show timestamp
+A plugin for JetBrains IDEs to show timestamp
 
 ## Features
 
@@ -45,8 +45,7 @@ A plugin for Jetbrains to show timestamp
 
 - Using the IDE built-in plugin system:
 
-  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "
-  intellij-plugin-showtime"</kbd> >
+  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "showtime"</kbd> >
   <kbd>Install</kbd>
 
 - Using JetBrains Marketplace:
